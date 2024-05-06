@@ -62,6 +62,6 @@ def highlight(parts:list[tuple[str, bool]]):
 def timer(time):
     baseElement = document.querySelector(".timer")
 
-    span = document.createElement('span')
-    span.innerText = str(time) + " s"
-    baseElement.append(span)
+    div = document.createElement('div')
+    div.innerText = str(time) + " s"
+    baseElement.append(div)

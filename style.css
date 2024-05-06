@@ -83,7 +83,7 @@ body {
 
 .timer {
     width: 500px;
-    height: 30px;
+    min-height: 30px;
     padding: 12px 20px;
     border: 2px solid #ccc;
     border-radius: 4px;

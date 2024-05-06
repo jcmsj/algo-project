@@ -1,7 +1,7 @@
 from pyscript import window, document, display
 from kmp import kmp_search
 from split import split_string, highlight, timer
-from rk import RabinKarp
+from rk import RabinKarp, rabin_karp
 from boyer import BoyerMoore, boyer_moore
 import time
 
@@ -11,8 +11,39 @@ selectElement = document.querySelector("#Algorithms")
 modeElement = document.querySelector("#modes")
 matchElement = document.querySelector("#n")
 
-
-
+def run(algo, text:str, pattern:str, n:int, *args):
+    start = time.perf_counter()
+    result = algo(text, pattern, n, *args)
+    stop = time.perf_counter()
+    duration = stop - start
+    timer(duration)
+    parts = split_string(text, pattern, result)
+    print(parts)
+    highlight(parts)
+    
+def run_dna(algo, text:str, pattern:str, n:int, *args):
+    # normal
+    run(algo, text, pattern, n, *args)
+    # reversed
+    inverted = pattern[::-1]
+    run(algo, text, inverted, n, *args)
+    # replaced
+    spliced = []
+    for char in patternElement.value:
+        if char == "A":
+            spliced.append("T")
+        elif char == "C":
+            spliced.append("G")
+        elif char == "T":
+            spliced.append("A")
+        elif char == "G":
+            spliced.append("C")
+        else:
+            spliced.append(char)
+    replaced = "".join(spliced)
+    replaced_inverted = replaced[::-1]
+    run(algo, text, replaced, n, *args)
+    run(algo, text, replaced_inverted, n, *args)
 def start_search(event):
     outputElement = document.querySelector(".output")
     outputElement.innerHTML = ''
@@ -21,150 +52,24 @@ def start_search(event):
     timerElement.innerHTML = 'Time: '
     
     if not matchElement.value.isdigit():
-        matchElement.innerHTML = '1'
+        matchElement.value = '1'
     elif matchElement.value == '0':
-        matchElement.innerHTML = '1'
-
+        matchElement.value = '1'
+    matches = int(matchElement.value)
 
     if (selectElement.value == "Knuth-Morris-Pratt"):
-        start = time.perf_counter()
-        result = kmp_search(textElement.value, patternElement.value, int(matchElement.value))
-        stop = time.perf_counter()
-        duration = stop - start
-        timer(duration)
-
-        parts = split_string(textElement.value, patternElement.value, result)
-        print(parts)
-        highlight(parts)
-        if (modeElement.value == "DNA"):
-            invert = patternElement.value[::-1]
-            spliced = []
-            for n in patternElement.value:
-                if n == "A":
-                    spliced.append("T")
-                elif n == "C":
-                    spliced.append("G")
-                elif n == "T":
-                    spliced.append("A")
-                elif n == "G":
-                    spliced.append("C")
-                else:
-                    spliced.append(n)
-
-            replaced = "".join(spliced)
-            replace_inverted = replaced[::-1]
-
-            invert_result = kmp_search(textElement.value, invert, int(matchElement.value))
-            invert_split = split_string(textElement.value, invert, invert_result)
-            print(invert_split)
-            highlight(invert_split)
-
-    
-            replaced_result = kmp_search(textElement.value, replaced, int(matchElement.value))
-            replaced_split = split_string(textElement.value, replaced, replaced_result)
-            print(replaced_split)
-            highlight(replaced_split)
-
-
-            ri_result = kmp_search(textElement.value, replace_inverted, int(matchElement.value))
-            ri_split = split_string(textElement.value, replace_inverted, ri_result)
-            print(ri_split)
-            highlight(ri_split)
-
-
-        
+        if modeElement.value == "Standard":
+            run(kmp_search, textElement.value, patternElement.value, matches)
+        elif (modeElement.value == "DNA"):
+            run_dna(kmp_search, textElement.value, patternElement.value, matches)
     elif (selectElement.value == "Boyer-Moore"):
         if modeElement.value == "Standard":
-            start = time.perf_counter()
-            bm = boyer_moore(textElement.value, patternElement.value,  int(matchElement.value))
-            stop = time.perf_counter()
-            duration = stop - start
-            timer(duration)
-            parts = split_string(textElement.value, patternElement.value, bm)
-            highlight(parts)
-        if modeElement.value == "DNA":
+            run(boyer_moore, textElement.value, patternElement.value, matches)
+        elif modeElement.value == "DNA":
             alphabet = 'ACTG'
-            invert = patternElement.value[::-1]
-            spliced = []
-            for n in patternElement.value:
-                if n == "A":
-                    spliced.append("T")
-                elif n == "C":
-                    spliced.append("G")
-                elif n == "T":
-                    spliced.append("A")
-                elif n == "G":
-                    spliced.append("C")
-                else:
-                    spliced.append(n)
-
-            replaced = "".join(spliced)
-            replace_inverted = replaced[::-1]
-
-            start = time.perf_counter()
-            invert_result = boyer_moore(textElement.value, invert,  int(matchElement.value),alphabet)
-            invert_split = split_string(textElement.value, invert, invert_result)
-            print(invert_split)
-            highlight(invert_split)
-            stop = time.perf_counter()
-            duration = stop - start
-            timer(duration)
-
-            replaced_result = boyer_moore( textElement.value, replaced, int(matchElement.value), alphabet)
-            replaced_split = split_string(textElement.value, replaced, replaced_result)
-            print(replaced_split)
-            highlight(replaced_split)
-
-            ri_result = boyer_moore(textElement.value, replace_inverted, int(matchElement.value), alphabet)
-            ri_split = split_string(textElement.value, replace_inverted, ri_result)
-            print(ri_split)
-            highlight(ri_split)
-
-
+            run_dna(boyer_moore, textElement.value, patternElement.value, matches, alphabet)
     elif (selectElement.value == "Rabin-Karp"):
-        start = time.perf_counter()
-        rk = RabinKarp(textElement.value, patternElement.value, int(matchElement.value))
-        rk.search()
-        stop = time.perf_counter()
-        duration = stop - start
-        timer(duration)
-
-        parts = split_string(textElement.value, patternElement.value, rk.matches)
-        highlight(parts)
-        print(parts)
-
-        if (modeElement.value == "DNA"):
-            invert = patternElement.value[::-1]
-            spliced = []
-            for n in patternElement.value:
-                if n == "A":
-                    spliced.append("T")
-                elif n == "C":
-                    spliced.append("G")
-                elif n == "T":
-                    spliced.append("A")
-                elif n == "G":
-                    spliced.append("C")
-                else:
-                    spliced.append(n)
-
-            replaced = "".join(spliced)
-            replace_inverted = replaced[::-1]
-
-            invert_result = RabinKarp(textElement.value, invert, int(matchElement.value))
-            invert_result.search()
-            invert_split = split_string(textElement.value, invert, invert_result.matches)
-            print(invert_split)
-            highlight(invert_split)
-
-            replaced_result = RabinKarp(textElement.value, replaced, int(matchElement.value))
-            replaced_split = split_string(textElement.value, replaced, replaced_result.matches)
-            print(replaced_split)
-            highlight(replaced_split)
-
-            ri_result = RabinKarp(textElement.value, replace_inverted, int(matchElement.value))
-            ri_result.search()
-            ri_split = split_string(textElement.value, replace_inverted, ri_result.matches)
-            print(ri_split)
-            highlight(ri_split)
-
+        if modeElement.value == "Standard":
+            run(rabin_karp, textElement.value, patternElement.value, matches)
+        elif (modeElement.value == "DNA"):
+            run_dna(rabin_karp, textElement.value, patternElement.value, matches)
