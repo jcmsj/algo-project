@@ -1,16 +1,19 @@
-from pyscript import window, document, display
+from pyscript import document
 from kmp import kmp_search
 from split import split_string, highlight, timer
-from rk import RabinKarp, rabin_karp
-from boyer import BoyerMoore, boyer_moore
+from rk import rabin_karp
+from boyer import boyer_moore
 import time
-
+import sys
 textElement = document.querySelector("#text")
 patternElement = document.querySelector("#pattern")
 selectElement = document.querySelector("#Algorithms")
 modeElement = document.querySelector("#modes")
 matchElement = document.querySelector("#n")
+matchesElement = document.querySelector("#matches")
 
+def showMatches(result:list[str]):
+    matchesElement.innerHTML += f"<div>{len(result)}</div>"
 def run(algo, text:str, pattern:str, n:int, *args):
     start = time.perf_counter()
     result = algo(text, pattern, n, *args)
@@ -20,6 +23,7 @@ def run(algo, text:str, pattern:str, n:int, *args):
     parts = split_string(text, pattern, result)
     print(parts)
     highlight(parts)
+    showMatches(result)
     
 def run_dna(algo, text:str, pattern:str, n:int, *args):
     # normal
@@ -47,15 +51,15 @@ def run_dna(algo, text:str, pattern:str, n:int, *args):
 def start_search(event):
     outputElement = document.querySelector(".output")
     outputElement.innerHTML = ''
-
+    matchesElement.innerHTML = ''
     timerElement = document.querySelector(".timer")
     timerElement.innerHTML = 'Time: '
     
     if not matchElement.value.isdigit():
-        matchElement.value = '1'
+        matchElement.value = sys.maxsize
     elif matchElement.value == '0':
-        matchElement.value = '1'
-    matches = int(matchElement.value)
+        matchElement.value = sys.maxsize
+    matches = int(matchElement.value)   
 
     if (selectElement.value == "Knuth-Morris-Pratt"):
         if modeElement.value == "Standard":

@@ -93,6 +93,18 @@ body {
 .timer div {
     height: max-content;
 }
+
+#matches-container {
+    width: 500px;
+    color: #ffffff;
+    background-color: #b3aa03;
+    padding: 12px 20px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    color: #000;
+    height: max-content;
+}
 /* <select> styles */
 select {
     appearance: none;
