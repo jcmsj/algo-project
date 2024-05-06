@@ -25,10 +25,15 @@ def run(algo, text:str, pattern:str, n:int, *args):
     highlight(parts)
     showMatches(result)
     
+def addOutputLabel(label:str):
+    output = document.querySelector(".output")
+    output.innerHTML += f"{label}:<br>"
 def run_dna(algo, text:str, pattern:str, n:int, *args):
     # normal
+    addOutputLabel('Normal')
     run(algo, text, pattern, n, *args)
-    # reversed
+    # inverted
+    addOutputLabel('Inverted')
     inverted = pattern[::-1]
     run(algo, text, inverted, n, *args)
     # replaced
@@ -46,7 +51,9 @@ def run_dna(algo, text:str, pattern:str, n:int, *args):
             spliced.append(char)
     replaced = "".join(spliced)
     replaced_inverted = replaced[::-1]
+    addOutputLabel('Replaced')
     run(algo, text, replaced, n, *args)
+    addOutputLabel('Inverted Replaced')
     run(algo, text, replaced_inverted, n, *args)
 def start_search(event):
     outputElement = document.querySelector(".output")
