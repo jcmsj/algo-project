@@ -83,14 +83,16 @@ body {
 
 .timer {
     width: 500px;
-    min-height: 30px;
+    height: max-content;
     padding: 12px 20px;
     border: 2px solid #ccc;
     border-radius: 4px;
     background-color: #f8f8f8;
     color: #000;
 }
-
+.timer div {
+    height: max-content;
+}
 /* <select> styles */
 select {
     appearance: none;
