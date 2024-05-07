@@ -138,7 +138,7 @@ def boyer_moore(t, p, n = 1, alphabet = ''.join(chr(i) for i in range(0x0000, 0x
         break
     if not mismatched:
       occurences.append(i)
-      skip_gs = p_bm.match_skip() + 1
+      skip_gs = p_bm.match_skip()
       shift = max(shift, skip_gs)
       n -= 1
     i += shift
@@ -190,8 +190,8 @@ class BoyerMoore(object):
   
 def main():
   
-    t = "bannanna"
-    p = 'anna'
+    t = "banana"
+    p = 'ana'
     n = 2
     print(boyer_moore(t,p, n))
 
