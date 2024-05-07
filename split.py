@@ -8,10 +8,9 @@ def split_string(s:str, pattern:str, locations:list[int]):
         tupled = (s, False)
         parts.append(tupled)
         return parts
-    
+    lastMatched = -1
     while start < len(s) and  i < len(locations):
-        start_index = locations[i]
-
+        start_index = max(locations[i], lastMatched)
         # found or not
         part = (s[start:start_index],False)
         # add the nonmatch
@@ -21,7 +20,7 @@ def split_string(s:str, pattern:str, locations:list[int]):
         # add the match
         end_index = start_index+len(pattern)
         matched = (s[start_index:end_index], True)
-        
+        lastMatched = end_index
         # appends matching substring
         parts.append(matched)
         start = end_index
