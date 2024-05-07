@@ -18,7 +18,8 @@ def split_string(s:str, pattern:str, locations:list[int]):
             parts.append(part)
 
         # add the match
-        end_index = start_index+len(pattern)
+        diff = max(lastMatched - locations[i],0)
+        end_index = start_index+len(pattern) -diff
         matched = (s[start_index:end_index], True)
         lastMatched = end_index
         # appends matching substring
